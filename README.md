@@ -16,7 +16,7 @@ Use an immutable jsDelivr URL after choosing a tag (or commit):
 <wanix-bind
   dst="#vm/v86"
   type="archive"
-  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc4/v86.tgz"
+  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc5/v86.tgz"
 ></wanix-bind>
 ```
 
@@ -51,12 +51,12 @@ Use both together with a `<wanix-vm type="rv64">` element:
 <wanix-bind
   dst="."
   type="archive"
-  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc4/wanix-linux-rv64.tgz"
+  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc5/wanix-linux-rv64.tgz"
 ></wanix-bind>
 <wanix-bind
   dst="#vm/rv64"
   type="archive"
-  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc4/rv64.tgz"
+  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc5/rv64.tgz"
 ></wanix-bind>
 <wanix-vm type="rv64" export="ttyS0" mem="512M" term start></wanix-vm>
 ```
