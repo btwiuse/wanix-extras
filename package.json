@@ -1,7 +1,7 @@
 {
   "name": "wanix-extras",
-  "version": "0.4.0-rc3",
-  "description": "Versioned static runtime assets for Wanix (v86 emulator, Linux images)",
+  "version": "0.4.0-rc4",
+  "description": "Versioned static runtime assets for Wanix (v86/rv64 emulators, Linux images)",
   "files": [
     "dist/**/*.wasm",
     "dist/**/*.tgz",
