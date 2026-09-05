@@ -62,6 +62,9 @@ Use both together with a `<wanix-vm type="rv64">` element:
 <wanix-vm type="rv64" export="ttyS0" mem="512M" term start></wanix-vm>
 ```
 
+`wanix-linux-arm64.tgz` is the ARM64 Alpine guest namespace. It contains
+Linux 7.2.3 at `boot/Image`, the ARM64 userland, and WANIX guest helpers.
+
 The adapter boots `boot/Image` directly and mounts the WANIX namespace as
 the guest's `host9p` root, mirroring the copy/v86 device layout: hvc0
 (virtio console) is the interactive resizable terminal and the 8250 UART
