@@ -7,8 +7,9 @@ Versioned static runtime assets for Wanix integrations.
 `v86.tgz` is the v86 backend archive built from Wanix commit
 `b22ae59 fix: forward terminal resizes to the v86 guest as console resizes`
 (guest hvc0 tracks the real panel size and receives SIGWINCH, so stty
-size and full-screen apps resize correctly). It contains the VM runner
-WASM, v86 WASM, and BIOS assets required by `<wanix-vm type="v86">`.
+size and full-screen apps resize correctly). The matching guest archive
+uses Linux 7.2.3 with built-in virtio-vsock support. It contains the VM
+runner WASM, v86 WASM, and BIOS assets required by `<wanix-vm type="v86">`.
 
 Use an immutable jsDelivr URL after choosing a tag (or commit):
 
