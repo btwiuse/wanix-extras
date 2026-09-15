@@ -1,14 +1,14 @@
 # Wanix Extras
 
-Versioned static runtime assets for Wanix integrations.
+Mirror of the Wanix emulator WASM archives. Linux guest images used by
+`<wanix-vm>` (the `wanix-linux-*` archives) now ship from the
+[`btwiuse/rv64.js`](https://github.com/btwiuse/rv64.js/releases) Releases —
+see the **Linux guest images** section below.
 
 ## v86
 
-`v86.tgz` is the v86 backend archive built from Wanix commit
-`b22ae59 fix: forward terminal resizes to the v86 guest as console resizes`
-(guest hvc0 tracks the real panel size and receives SIGWINCH, so stty
-size and full-screen apps resize correctly). The matching guest archive
-uses Linux 7.2.3 with built-in virtio-vsock support. It contains the VM
+`v86.tgz` mirrors the v86 backend archive built by the upstream
+[`copy/v86`](https://github.com/copy/v86) project. It contains the VM
 runner WASM, v86 WASM, and BIOS assets required by `<wanix-vm type="v86">`.
 
 Use an immutable jsDelivr URL after choosing a tag (or commit):
@@ -17,57 +17,68 @@ Use an immutable jsDelivr URL after choosing a tag (or commit):
 <wanix-bind
   dst="#vm/v86"
   type="archive"
-  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc6/v86.tgz"
+  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc33/v86.tgz"
 ></wanix-bind>
 ```
 
-Or via npm after `npm publish` (package version tracks the tag):
+Or fetch the upstream copy directly:
 
 ```html
 <wanix-bind
   dst="#vm/v86"
   type="archive"
-  src="https://cdn.jsdelivr.net/npm/wanix-extras@0.4.0-rc4/dist/v86.tgz"
+  src="https://cdn.jsdelivr.net/gh/copy/v86@<v86-tag>/v86.tgz"
 ></wanix-bind>
 ```
 
-The archive supports `netdev="wisp,wisps://relay.example.com"` and
-`netdev="fetch"`.
-
 ## rv64.js
 
-`rv64.tgz` is the RISC-V 64 backend archive built from the rv64.js repo's
-`integrations/wanix` (WANIX adapter + TinyEMU-derived RV64 emulator WASM
-and loader, pinned to the rv64.js `v0.3.0` release). It is consumed by
-`<wanix-vm type="rv64">` the same way v86 uses `v86.tgz`.
+`rv64.tgz` mirrors the TinyEMU-derived RISC-V 64 emulator WASM and loader
+that ship in [`ibuildthecloud/rv64.js`](https://github.com/ibuildthecloud/rv64.js/releases).
+It is consumed by `<wanix-vm type="rv64">` the same way v86 uses
+`v86.tgz`.
 
-`wanix-linux-rv64.tgz` is the RISC-V 64 Linux guest (Alpine) built by
-`rv64.js/integrations/wanix` — the raw RISC-V `boot/Image` plus a fully
-deployed root filesystem whose init runs a login shell on `/dev/hvc0`
-(the interactive virtio console).
+```html
+<wanix-bind
+  dst="#vm/rv64"
+  type="archive"
+  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc33/rv64.tgz"
+></wanix-bind>
+```
 
-Use both together with a `<wanix-vm type="rv64">` element:
+Or fetch the upstream copy directly:
+
+```html
+<wanix-bind
+  dst="#vm/rv64"
+  type="archive"
+  src="https://cdn.jsdelivr.net/gh/ibuildthecloud/rv64.js@<rv64.js-tag>/rv64.tgz"
+></wanix-bind>
+```
+
+## Linux guest images
+
+Linux guest archives (`wanix-linux-<arch>.tgz`,
+`wanix-linux-<arch>-container.tgz`, `wanix-linux-<arch>-container-full.tgz`)
+are built and published from the
+[`btwiuse/rv64.js`](https://github.com/btwiuse/rv64.js) repository. Use
+the GitHub Releases URL for the matching tag, for example:
 
 ```html
 <wanix-bind
   dst="."
   type="archive"
-  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc6/wanix-linux-rv64.tgz"
+  src="https://github.com/btwiuse/rv64.js/releases/download/wanix-guests-rc33/wanix-linux-rv64.tgz"
 ></wanix-bind>
 <wanix-bind
   dst="#vm/rv64"
   type="archive"
-  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc6/rv64.tgz"
+  src="https://cdn.jsdelivr.net/gh/btwiuse/wanix-extras@v0.4.0-rc33/rv64.tgz"
 ></wanix-bind>
 <wanix-vm type="rv64" export="ttyS0" mem="512M" term start></wanix-vm>
 ```
 
-`wanix-linux-arm64.tgz` is the ARM64 Alpine guest namespace. It contains
-Linux 7.2.3 at `boot/Image`, the ARM64 userland, and WANIX guest helpers.
-
-The adapter boots `boot/Image` directly and mounts the WANIX namespace as
-the guest's `host9p` root, mirroring the copy/v86 device layout: hvc0
-(virtio console) is the interactive resizable terminal and the 8250 UART
-(ttyS0) carries the WANIX host-export stream. The guest configures
-`10.0.2.15` and uses the fetch network backend (CORS fallback to a
-hosted relay); see the rv64.js integration README for details.
+For browser CORS access on releases larger than 20 MB, use the existing
+Cloudflare R2 cache served by the
+[`rv64-release-assets`](https://github.com/btwiuse/rv64.js/tree/main/deploy/release-assets-worker)
+Worker.

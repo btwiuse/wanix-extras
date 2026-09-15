@@ -1,15 +1,13 @@
 {
   "name": "wanix-extras",
-  "version": "0.4.0-rc18",
-  "description": "Versioned static runtime assets for Wanix (v86/rv64 emulators, Linux images)",
+  "version": "0.4.0-rc33",
+  "description": "Convenience mirror for the Wanix emulator WASM archives. WANIX guest images are published from the rv64.js repository; this repository only re-hosts the v86 and rv64 emulator assets so existing URL consumers can keep using wanix-extras tags.",
   "files": [
-    "dist/**/*.wasm",
-    "dist/**/*.tgz",
-    "dist/workbench/**/*"
+    "v86.tgz",
+    "rv64.tgz"
   ],
   "scripts": {
-    "build": "make dist",
-    "prepublishOnly": "make dist"
+    "build": "make dist"
   },
   "license": "MIT"
 }

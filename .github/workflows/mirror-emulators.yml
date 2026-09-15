@@ -1,0 +1,71 @@
+name: Mirror emulator WASM archives
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: Upstream copy/v86 release tag to mirror
+        required: true
+        type: string
+      rv64_release:
+        description: Upstream rv64.js release tag to mirror
+        required: true
+        type: string
+      publish_tag:
+        description: wanix-extras release tag to create or update
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    name: Pull and publish archives
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download v86 archive
+        run: |
+          mkdir -p downloads
+          curl --fail --location --retry 3 \
+            -o downloads/v86.tgz \
+            "https://github.com/copy/v86/releases/download/${SOURCE_TAG}/v86.tgz"
+
+      - name: Download rv64 archive
+        run: |
+          mkdir -p downloads
+          curl --fail --location --retry 3 \
+            -o downloads/rv64.tgz \
+            "https://github.com/ibuildthecloud/rv64.js/releases/download/${RV64_RELEASE}/rv64.tgz"
+
+      - name: Validate archive entries
+        run: |
+          for entry in v86.tgz rv64.tgz; do
+            tar -tzf "downloads/$entry" >/dev/null
+          done
+
+      - name: Prepare dist directory
+        run: |
+          mkdir -p dist
+          cp downloads/v86.tgz downloads/rv64.tgz dist/
+          (cd dist && sha256sum v86.tgz rv64.tgz > SHA256SUMS)
+
+      - name: Publish to this repository's release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_TAG: ${{ inputs.publish_tag }}
+        run: |
+          if ! gh release view "$PUBLISH_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$PUBLISH_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "Wanix extras $PUBLISH_TAG" \
+              --notes "Mirrors v86 and rv64 emulator archives from upstream releases."
+          fi
+          gh release upload "$PUBLISH_TAG" \
+            dist/v86.tgz dist/rv64.tgz dist/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" --clobber
